@@ -1,0 +1,42 @@
+package com.parthiv.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.parthiv.model.CoinDTO;
+import com.parthiv.request.PromptBody;
+import com.parthiv.response.ApiResponse;
+import com.parthiv.service.ChatBotService;
+import com.parthiv.service.ChatBotServiceImpl;
+
+@RestController()
+@RequestMapping("/chat")
+public class ChatBotController {
+
+    @Autowired
+    private ChatBotService chatBotService;
+
+    @GetMapping("/coin/{coinName}")
+    public ResponseEntity<CoinDTO> getCoinDetails(@PathVariable String coinName){
+
+        CoinDTO coinDTO=chatBotService.getCoinByName(coinName);
+        return new ResponseEntity<>(coinDTO, HttpStatus.OK);
+    }
+
+    @PostMapping("/bot")
+    public ResponseEntity<String> simpleChat(@RequestBody PromptBody promptBody){
+
+        String res = chatBotService.simpleChat(promptBody.getPrompt());
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/bot/coin")
+    public ResponseEntity<ApiResponse> getCoinRealtimeTime(@RequestBody PromptBody promptBody){
+
+        ApiResponse res = chatBotService.getCoinDetails(promptBody.getPrompt());
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+}
